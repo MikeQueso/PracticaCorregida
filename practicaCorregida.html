@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChoriquesoWeb</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0;
+            padding: 20px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+            /* Imagen de fondo mantenida */
+            background: #1a1a1a url('https://wallpaperaccess.com/full/1154563.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        h1 { 
+            color: #ffffff; 
+            margin-bottom: 25px; 
+            font-weight: 900; 
+            font-size: 3.5em;
+            text-shadow: 4px 4px 0px #ffcc00;
+            text-transform: uppercase;
+        }
+
+        .main-card {
+            width: 100%;
+            max-width: 1100px;
+            background: rgba(255, 255, 255, 0.98); 
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            overflow: hidden;
+            border: 2px solid #ffcc00;
+        }
+
+        .selector-header {
+            padding: 25px;
+            background: #ffffff;
+            cursor: pointer;
+            border-bottom: 2px solid #f0f2f5;
+            font-weight: bold;
+            font-size: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .options-list {
+            display: none;
+            background: #ffffff;
+        }
+
+        .option-item {
+            padding: 20px 25px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .option-item:hover { 
+            background: #ffcc00; 
+            color: #000; 
+            font-weight: bold;
+        }
+
+        .display-container {
+            padding: 25px;
+            display: none;
+        }
+
+        .grid-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 900px) {
+            .grid-content { grid-template-columns: 1fr 1fr; }
+        }
+
+        .frame-box h3 {
+            font-size: 14px;
+            color: #1c1e21;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            border-left: 5px solid #ffcc00;
+            padding-left: 10px;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 600px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .active { display: block; }
+        .rotate { transform: rotate(180deg); }
+    </style>
+</head>
+<body>
+
+    <h1>choriquesoWeb</h1>
+
+    <div class="main-card">
+        <div class="selector-header" onclick="toggleMenu()">
+            <span id="selected-title">Seleccionar Ubicación / Facebook</span>
+            <span id="arrow" style="transition: 0.3s;">▼</span>
+        </div>
+
+        <div id="options" class="options-list">
+            <div class="option-item" onclick="selectLocation('UTN (Oficial)', 'https://www.google.com/maps?q=19.403823785253177,-98.98617655167097&z=16&output=embed', 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FOficialUTN&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true')">
+                🏫 UTN - Página Oficial
+            </div>
+            
+            <div class="option-item" onclick="selectLocation('Sumo Buffet Neza', 'https://www.google.com/maps?q=19.408655246610095,-99.01986816050317&z=17&output=embed', 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FSumoBuffetNeza&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true')">
+                🍣 Sumo Buffet Neza
+            </div>
+
+            <div class="option-item" onclick="selectLocation('Cinépolis Neza', 'https://www.google.com/maps?q=19.4011111,-98.9883333&z=16&output=embed', 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fcinepolisonline&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true')">
+                🎬 Cinépolis Neza
+            </div>
+
+            <div class="option-item" onclick="selectLocation('IMSS', 'https://www.google.com/maps?q=19.306601383858553,-99.12947680436001&z=16&output=embed', 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FIMSSmx&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true')">
+                🏥 IMSS - Página Oficial
+            </div>
+        </div>
+
+        <div id="display-area" class="display-container">
+            <div class="grid-content">
+                <div class="frame-box">
+                    <h3>📍 Ubicación en Mapa</h3>
+                    <div class="iframe-container">
+                        <iframe id="frame-map" src=""></iframe>
+                    </div>
+                </div>
+                <div class="frame-box">
+                    <h3>👥 Facebook Oficial</h3>
+                    <div class="iframe-container">
+                        <iframe id="frame-face" src=""></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const options = document.getElementById('options');
+            const arrow = document.getElementById('arrow');
+            options.classList.toggle('active');
+            arrow.classList.toggle('rotate');
+        }
+
+        function selectLocation(name, mapUrl, faceUrl) {
+            document.getElementById('selected-title').innerText = "Viendo: " + name;
+            document.getElementById('frame-map').src = mapUrl;
+            document.getElementById('frame-face').src = faceUrl;
+            document.getElementById('display-area').classList.add('active');
+            toggleMenu();
+        }
+    </script>
+
+</body>
+</html>
